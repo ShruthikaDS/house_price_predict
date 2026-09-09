@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Price Predictor</title>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #f0f4f8 0%, #d9e2ec 100%);
+            --card-bg: #ffffff;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
+            
+            /* Custom elevation shadows */
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+            --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --shadow-glow: 0 8px 20px rgba(37, 99, 235, 0.35);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg-gradient);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 24px 12px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: var(--shadow-lg);
+            padding: 32px;
+            width: 100%;
+            max-width: 520px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            transition: transform 0.2s ease;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 1.75rem;
+            text-align: center;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+            color: var(--text-dark);
+        }
+
+        input[type="number"], select {
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background-color: #fff;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s ease;
+        }
+
+        input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: var(--shadow-glow);
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result-box {
+            margin-top: 24px;
+            padding: 16px;
+            border-radius: 10px;
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            text-align: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .result-title {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>House Price Evaluator</h1>
+    <p class="subtitle">Enter property details to estimate house valuation</p>
+
+    <form method="POST">
+        <div class="form-grid">
+            <div class="form-group full-width">
+                <label for="Square_Footage">Square Footage (sq ft)</label>
+                <input type="number" step="any" name="Square_Footage" id="Square_Footage" placeholder="e.g. 2500" required>
+            </div>
+
+            <div class="form-group">
+                <label for="Num_Bedrooms">Bedrooms</label>
+                <select name="Num_Bedrooms" id="Num_Bedrooms" required>
+                    {% for n in range(1, 6) %}
+                        <option value="{{ n }}">{{ n }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="Num_Bathrooms">Bathrooms</label>
+                <select name="Num_Bathrooms" id="Num_Bathrooms" required>
+                    {% for n in range(1, 4) %}
+                        <option value="{{ n }}">{{ n }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="Year_Built">Year Built</label>
+                <input type="number" name="Year_Built" id="Year_Built" placeholder="e.g. 1995" min="1900" max="2026" required>
+            </div>
+
+            <div class="form-group">
+                <label for="Lot_Size">Lot Size (Acres)</label>
+                <input type="number" step="any" name="Lot_Size" id="Lot_Size" placeholder="e.g. 1.25" required>
+            </div>
+
+            <div class="form-group">
+                <label for="Garage_Size">Garage Capacity</label>
+                <select name="Garage_Size" id="Garage_Size" required>
+                    <option value="0">0 Cars</option>
+                    <option value="1">1 Car</option>
+                    <option value="2">2 Cars</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="Neighborhood_Quality">Neighborhood Quality</label>
+                <select name="Neighborhood_Quality" id="Neighborhood_Quality" required>
+                    {% for n in range(1, 11) %}
+                        <option value="{{ n }}" {% if n == 5 %}selected{% endif %}>Grade {{ n }}/10</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="full-width">Calculate Estimate</button>
+        </div>
+    </form>
+
+    {% if prediction is not none %}
+        <div class="result-box">
+            <div class="result-title">Estimated Valuation</div>
+            <div class="result-value">{{ prediction }}</div>
+        </div>
+    {% endif %}
+</div>
+
+</body>
+</html>
